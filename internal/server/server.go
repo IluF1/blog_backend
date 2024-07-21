@@ -1,9 +1,9 @@
 package server
 
 import (
-	"net/http"
-
 	"github.com/gorilla/mux"
+	"guthub.com/server/internal/service"
+	"net/http"
 )
 
 type server struct {
@@ -17,7 +17,6 @@ func New(addr string) *server {
 		router: mux.NewRouter(),
 	}
 	s.SetupRouter()
-
 	return s
 }
 
@@ -25,4 +24,7 @@ func (s *server) Run() error {
 	return http.ListenAndServe(s.addr, s.router)
 }
 
-func (s *server) SetupRouter() {}
+func (s *server) SetupRouter() {
+	s.router.HandleFunc("/api/posts", service.GetPosts).Methods("GET")
+	s.router.HandleFunc("/api/post/{id}", service.GetPostById).Methods("POST")
+}
