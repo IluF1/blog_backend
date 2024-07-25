@@ -3,6 +3,7 @@ package postgresql
 import (
 	"database/sql"
 
+	_ "github.com/lib/pq"
 	"guthub.com/server/internal/models"
 	"guthub.com/server/pkg/logger"
 )
@@ -54,15 +55,14 @@ func (s *Storage) GetAllPosts() ([]models.Post, error) {
 }
 
 func (s *Storage) GetUserByEmail(email string) (*models.User, error) {
-	row := s.db.QueryRow("SELECT id, name, password FROM users WHERE email = $1", email)
+	row := s.db.QueryRow("SELECT id, name, email FROM users WHERE email = $1", email)
 
 	var user models.User
-	err := row.Scan(&user.Id, &user.Name, &user.Password)
+	err := row.Scan(&user.Id, &user.Name, &user.Email)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			logger.Logger.Panic("there is no such user:" + err.Error())
+			logger.Logger.Panic("Такого пользователя не существует:" + err.Error())
 		}
-		logger.Logger.Fatal("Failed get user: " + err.Error())
 	}
 
 	return &user, nil
@@ -75,9 +75,8 @@ func (s *Storage) GetPostById(id int) (*models.Post, error) {
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			logger.Logger.Panic("there is no such post:" + err.Error())
+			logger.Logger.Panic("Такой записи не существует:" + err.Error())
 		}
-		logger.Logger.Fatal("Failed get post: " + err.Error())
 	}
 
 	return &post, nil

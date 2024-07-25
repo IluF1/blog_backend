@@ -1,9 +1,10 @@
 package server
 
 import (
+	"net/http"
+
 	"github.com/gorilla/mux"
 	"guthub.com/server/internal/service"
-	"net/http"
 )
 
 type server struct {
@@ -26,5 +27,7 @@ func (s *server) Run() error {
 
 func (s *server) SetupRouter() {
 	s.router.HandleFunc("/api/posts", service.GetPosts).Methods("GET")
-	s.router.HandleFunc("/api/post/{id}", service.GetPostById).Methods("POST")
+	// s.router.HandleFunc("/api/post/{id}", service.GetPostById).Methods("POST")
+	s.router.HandleFunc("/api/user/{email}", service.GetUser).Methods("POST")
+	
 }
