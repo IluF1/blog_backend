@@ -12,8 +12,8 @@ type Storage struct {
 	db *sql.DB
 }
 
-func New(connStr string) (*Storage, error) {
-	db, err := sql.Open("postgres", connStr)
+func New() (*Storage, error) {
+	db, err := sql.Open("postgres", "postgres://postgres:12345@localhost:5432/blog?sslmode=disable")
 	if err != nil {
 		return nil, err
 	}
@@ -22,7 +22,7 @@ func New(connStr string) (*Storage, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	
 	return &Storage{db: db}, nil
 }
 
@@ -81,3 +81,12 @@ func (s *Storage) GetPostById(id int) (*models.Post, error) {
 
 	return &post, nil
 }
+
+func (s *Storage) RegisterUser(email string, name string, password string) {
+	_, err := s.db.Exec("INSERT INTO users (name, email, password) VALUES ($1, $2, $3)", name, email, password)
+	if err != nil {
+		logger.Logger.Fatal("Ошибка вставки в базу данных:" + err.Error())
+	}
+}
+
+func (s *Storage) GetUserByEmailAndPassword(email string, password string) {} 

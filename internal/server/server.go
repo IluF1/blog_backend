@@ -27,8 +27,8 @@ func (s *server) Run() error {
 }
 
 func (s *server) SetupRouter() {
-	s.router.Handle("/api/posts", middleware.Headers(http.HandlerFunc(service.GetPosts))).Methods("GET")
+	s.router.HandleFunc("/api/posts", service.GetPosts).Methods("GET")
 	// s.router.HandleFunc("/api/post/{id}", service.GetPostById).Methods("POST")
-	s.router.Handle("/api/user/{email}", middleware.Headers(http.HandlerFunc(service.GetUser))).Methods("POST")
+	s.router.Handle("/api/user", middleware.Headers(http.HandlerFunc(service.GetUser))).Methods("POST")
 	
 }

@@ -12,7 +12,7 @@ import (
 
 func GetPosts(w http.ResponseWriter, r *http.Request) {
 
-	db, err := postgresql.New("postgres://postgres:12345@localhost:5432/blog?sslmode=disable")
+	db, err := postgresql.New()
 	if err != nil {
 		logger.Logger.Error("Failed to connect to the database", zap.Error(err))
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
@@ -32,7 +32,7 @@ func GetPosts(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 
 	}
-
+	
 	w.Write(convert)
 }
 
